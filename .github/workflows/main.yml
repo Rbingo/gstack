@@ -1,0 +1,39 @@
+name: 自动同步上游仓库  # 工作流的名字
+
+# 触发器：定义何时运行
+on:
+  schedule:
+    # 定时任务：使用 cron 表达式定义运行时间
+    # 这行代码的意思是：每天北京时间 8:00 运行（UTC 时间 0:00）
+    - cron: '0 0 * * *'
+  workflow_dispatch:  # 允许你手动触发，方便测试
+
+# 任务：定义具体要做什么
+jobs:
+  sync-with-upstream:
+    name: 同步主分支
+    runs-on: ubuntu-latest  # 在最新的 Ubuntu 系统上运行
+
+    # 步骤：任务的具体执行步骤
+    steps:
+      # 步骤1：检出你的仓库代码
+      - name: 检出代码
+        uses: actions/checkout@v3
+
+      # 步骤2：使用一个社区成熟的 Action 来执行同步
+      - name: 从上游仓库同步
+        id: sync
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+        with:
+          # 请务必修改下面三处信息为你自己的！
+          upstream_sync_repo: garrytan/gstack   # 例如：octocat/Hello-World
+          upstream_sync_branch: main           # 原项目的主分支名 (也可能是 master)
+          target_sync_branch: main             # 你的 fork 仓库的目标分支名
+          
+          # 使用 GitHub 自动提供的 token 进行认证，无需手动创建
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+
+      # 步骤3：简单的成功提示
+      - name: 同步完成提示
+        if: success()
+        run: echo "同步操作已完成！"
