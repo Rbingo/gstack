@@ -1,9 +1,13 @@
 .env
 node_modules/
 browse/dist/
+design/dist/
+bin/gstack-global-discover
 .gstack/
 .claude/skills/
+.agents/
 .context/
+.gstack-worktrees/
 /tmp/
 *.log
 bun.lock
@@ -12,3 +16,4 @@ bun.lock
 .env.local
 .env.*
 !.env.example
+supabase/.temp/
